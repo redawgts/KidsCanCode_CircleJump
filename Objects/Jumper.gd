@@ -1,6 +1,7 @@
 extends Area2D
 
 signal captured
+signal died
 
 var velocity = Vector2(100, 0)
 var jump_speed = 1000
@@ -45,4 +46,5 @@ func _on_Jumper_area_entered(area):
 
 func _on_visibility_notifier_screen_exited() -> void:
 	if !target:
+		emit_signal("died")
 		die()
