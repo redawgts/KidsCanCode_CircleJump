@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/images/circle_1.png" type="Texture" id=1]
 [ext_resource path="res://objects/color_shader.tres" type="Material" id=2]
 [ext_resource path="res://objects/circle.gd" type="Script" id=3]
+[ext_resource path="res://assets/fonts/xolonium_64.tres" type="DynamicFont" id=4]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 131.004
@@ -101,3 +102,16 @@ position = Vector2( 150, 0 )
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/capture = SubResource( 5 )
 anims/implode = SubResource( 3 )
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -22.5
+margin_top = -39.0
+margin_right = 22.5
+margin_bottom = 39.0
+custom_fonts/font = ExtResource( 4 )
+text = "1"
+align = 1
