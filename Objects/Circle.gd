@@ -22,10 +22,12 @@ func init(_position, _radius = radius, _mode = Modes.LIMITED):
 	set_mode(_mode)
 	position = _position
 	radius = _radius
+	sprite.material = sprite.material.duplicate()
+	$SpriteEffect.material = sprite.material
 	collision_shape.shape = collision_shape.shape.duplicate()
 	collision_shape.shape.radius = radius
 	var img_size = sprite.texture.get_size().x / 2
-	sprite.scale = Vector2(1,1) * radius / img_size
+	sprite.scale = Vector2(1, 1) * radius / img_size
 	orbit_position.position.x = radius + 25
 	rotation_speed *= pow(-1, randi() % 2)
 
@@ -40,25 +42,30 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	if jumper:
 		var r = ((radius - 50) / num_orbits) * (1 + num_orbits - current_orbits)
-		draw_circle_arc_poly(Vector2.ZERO, r + 10, orbit_start + PI / 2,
-				$Pivot.rotation + PI / 2, Color(1, 0, 0))
+		draw_circle_arc_poly(
+			Vector2.ZERO, r + 10, orbit_start + PI / 2,
+			$Pivot.rotation + PI / 2,
+			Settings.theme["circle_fill"]
+		)
 
 
-func draw_circle_arc_poly(center, radius, angle_from, angle_to, color):
+func draw_circle_arc_poly(center, _radius, angle_from, angle_to, color):
 	var nb_points = 32
 	var points_arc = PoolVector2Array()
 	points_arc.push_back(center)
 	var colors = PoolColorArray([color])
 
 	for i in range(nb_points + 1):
-		var angle_point = angle_from + i * (angle_to - angle_from) / nb_points - PI/2
-		points_arc.push_back(center + Vector2(cos(angle_point), sin(angle_point)) * radius)
+		var angle_point = angle_from + i * (angle_to - angle_from) / nb_points - PI / 2
+		points_arc.push_back(center + Vector2(cos(angle_point), sin(angle_point)) * _radius)
 	draw_polygon(points_arc, colors)
 
 
 func check_orbits():
 	if abs($Pivot.rotation - orbit_start) > 2 * PI:
 		current_orbits -= 1
+		if Settings.enable_sound:
+			$Beep.play()
 		$Label.text = str(current_orbits)
 		if current_orbits <= 0:
 			jumper.die()
@@ -66,15 +73,20 @@ func check_orbits():
 			implode()
 		orbit_start = $Pivot.rotation
 
+
 func set_mode(_mode):
 	mode = _mode
+	var color
 	match mode:
 		Modes.STATIC:
 			$Label.hide()
+			color = Settings.theme["circle_static"]
 		Modes.LIMITED:
 			current_orbits = num_orbits
 			$Label.text = str(current_orbits)
 			$Label.show()
+			color = Settings.theme["circle_limited"]
+	sprite.material.set_shader_param("color", color)
 
 
 func implode():

@@ -11,6 +11,10 @@ var trail_length = 25
 onready var trail := $Trail/Points
 
 
+func _ready() -> void:
+	$Sprite.material.set_shader_param("color", Settings.theme["player_body"])
+	$Trail/Points.default_color = Settings.theme["player_trail"]
+
 func _unhandled_input(event):
 	if target and event is InputEventScreenTouch and event.pressed:
 		jump()
@@ -31,6 +35,8 @@ func jump():
 	target.implode()
 	target = null
 	velocity = transform.x * jump_speed
+	if Settings.enable_sound:
+		$Jump.play()
 
 
 func die():
@@ -42,6 +48,8 @@ func _on_Jumper_area_entered(area):
 	target = area
 	velocity = Vector2.ZERO
 	emit_signal("captured", area)
+	if Settings.enable_sound:
+		$Capture.play()
 
 
 func _on_visibility_notifier_screen_exited() -> void:

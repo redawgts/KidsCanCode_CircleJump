@@ -1,11 +1,11 @@
 extends Node
 
-
 var Circle = preload("res://objects/circle.tscn")
 var Jumper = preload("res://objects/jumper.tscn")
 
 var player
 var score = 0
+
 
 func _ready() -> void:
 	randomize()
@@ -24,6 +24,8 @@ func new_game():
 	spawn_circle($StartPosition.position)
 	$HUD.show()
 	$HUD.show_message("Go!")
+	if Settings.enable_music:
+		$Music.play()
 
 
 func spawn_circle(_position = null):
@@ -43,8 +45,10 @@ func _on_jumper_captured(object):
 	score += 1
 	$HUD.update_score(score)
 
+
 func _on_jumper_died():
 	get_tree().call_group("circles", "implode")
 	$Screens.game_over()
 	$HUD.hide()
-
+	if Settings.enable_music:
+		$Music.stop()
