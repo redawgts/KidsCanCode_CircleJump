@@ -2,7 +2,7 @@ extends Area2D
 
 enum Modes { STATIC, LIMITED }
 
-var radius = 100
+var radius = 120
 var rotation_speed := PI
 var mode = Modes.STATIC
 var move_range = 0
@@ -37,7 +37,7 @@ func init(_position, level = 1):
 	collision_shape.shape.radius = radius
 	var img_size = sprite.texture.get_size().x / 2
 	sprite.scale = Vector2(1, 1) * radius / img_size
-	orbit_position.position.x = radius + 25
+	orbit_position.position.x = radius
 	rotation_speed *= pow(-1, randi() % 2)
 	set_tween()
 
@@ -53,7 +53,7 @@ func _draw() -> void:
 	if jumper:
 		var r = ((radius - 50) / num_orbits) * (1 + num_orbits - current_orbits)
 		draw_circle_arc_poly(
-			Vector2.ZERO, r + 10, orbit_start + PI / 2,
+			Vector2.ZERO, r, orbit_start + PI / 2,
 			$Pivot.rotation + PI / 2,
 			Settings.theme["circle_fill"]
 		)

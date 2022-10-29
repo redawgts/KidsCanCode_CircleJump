@@ -1,7 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
-
-[sub_resource type="Shader" id=1]
-code = "shader_type canvas_item;
+shader_type canvas_item;
 
 uniform vec4 color : hint_color;
 uniform float speed : hint_range(0, 20);
@@ -18,11 +15,3 @@ void fragment() {
 	COLOR.rgb = color.rgb;
 	COLOR.a = texture(TEXTURE, UV).a + smoothstep(thickness / 2.0, 0.0, abs(dist-rad));
 }
-"
-
-[resource]
-shader = SubResource( 1 )
-shader_param/color = Color( 0.00784314, 1, 0, 1 )
-shader_param/speed = 0.0
-shader_param/radius = 0.31
-shader_param/width = 0.2
