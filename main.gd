@@ -5,6 +5,7 @@ var Jumper = preload("res://objects/jumper.tscn")
 
 var player
 var score = 0 setget set_score
+var num_circles
 var highscore = 0
 var new_highscore = false
 var level = 0
@@ -21,8 +22,9 @@ func new_game():
 	new_highscore = false
 	self.score = 0
 	self.bonus = 0
+	num_circles = 0
 	level = 1
-	$HUD.update_score(score)
+	$HUD.update_score(score, 0)
 	$Camera2D.position = $StartPosition.position
 	player = Jumper.instance()
 	player.position = $StartPosition.position
@@ -72,14 +74,11 @@ func fade_music():
 
 
 func set_score(value):
+	$HUD.update_score(score, value)
 	score = value
 	if score > highscore and !new_highscore:
 		$HUD.show_message("New Record!")
 		new_highscore = true
-	$HUD.update_score(score)
-	if score > 0 and score % Settings.circles_per_level == 0:
-		level += 1
-		$HUD.show_message("Level %d" % level)
 
 
 func set_bonus(value):
@@ -93,7 +92,10 @@ func _on_jumper_captured(object):
 	call_deferred("spawn_circle")
 	self.score += 1 * bonus
 	self.bonus += 1
-
+	num_circles += 1
+	if num_circles > 0 and num_circles % Settings.circles_per_level == 0:
+		level += 1
+		$HUD.show_message("Level %d" % level)
 
 func _on_jumper_died():
 	if score > highscore:
