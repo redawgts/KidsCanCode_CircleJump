@@ -1,5 +1,7 @@
 extends Area2D
 
+signal full_orbit
+
 enum Modes { STATIC, LIMITED }
 
 var radius = 120
@@ -44,14 +46,16 @@ func init(_position, level = 1):
 
 func _process(delta: float) -> void:
 	pivot.rotation += rotation_speed * delta
-	if mode == Modes.LIMITED and jumper:
+	if jumper:
 		check_orbits()
 		update()
 
 
 func _draw() -> void:
+	if mode != Modes.LIMITED:
+		return
 	if jumper:
-		var r = ((radius - 50) / num_orbits) * (1 + num_orbits - current_orbits)
+		var r = ((radius * 0.5) / num_orbits) * (1 + current_orbits)
 		draw_circle_arc_poly(
 			Vector2.ZERO, r, orbit_start + PI / 2,
 			$Pivot.rotation + PI / 2,
@@ -73,14 +77,16 @@ func draw_circle_arc_poly(center, _radius, angle_from, angle_to, color):
 
 func check_orbits():
 	if abs($Pivot.rotation - orbit_start) > 2 * PI:
-		current_orbits -= 1
-		if Settings.enable_sound:
-			$Beep.play()
-		$Label.text = str(current_orbits)
-		if current_orbits <= 0:
-			jumper.die()
-			jumper = null
-			implode()
+		current_orbits += 1
+		emit_signal("full_orbit")
+		if mode == Modes.LIMITED:
+			if Settings.enable_sound:
+				$Beep.play()
+			$Label.text = str(num_orbits - current_orbits)
+			if current_orbits <= 0:
+				jumper.die()
+				jumper = null
+				implode()
 		orbit_start = $Pivot.rotation
 
 
@@ -92,20 +98,21 @@ func set_mode(_mode):
 			$Label.hide()
 			color = Settings.theme["circle_static"]
 		Modes.LIMITED:
-			current_orbits = num_orbits
-			$Label.text = str(current_orbits)
+			$Label.text = str(num_orbits)
 			$Label.show()
 			color = Settings.theme["circle_limited"]
 	sprite.material.set_shader_param("color", color)
 
 
 func implode():
+	jumper = null
 	animation_player.play("implode")
 	yield(animation_player, "animation_finished")
 	queue_free()
 
 
 func capture(target):
+	current_orbits = 0
 	jumper = target
 	animation_player.play("capture")
 	$Pivot.rotation = (jumper.position - position).angle()

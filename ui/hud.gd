@@ -20,3 +20,10 @@ func show():
 
 func update_score(value):
 	$ScoreBox/HBoxContainer/Score.text = str(value)
+
+
+func update_bonus(value):
+	$BonusBox/Bonus.text = "%dx" % value
+	if value > 1:
+		$AnimationPlayer.play("bonus")
+
