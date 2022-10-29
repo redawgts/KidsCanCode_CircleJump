@@ -2,15 +2,17 @@ extends Area2D
 
 enum Modes { STATIC, LIMITED }
 
-export(int) var radius := 100
-export(float) var rotation_speed := PI
-export(Modes) var mode := Modes.STATIC
-
+var radius := 100
+var rotation_speed := PI
+var mode = Modes.STATIC
+var move_range := 100
+var move_speed := 1.0
 var num_orbits = 3
 var current_orbits = 0
 var orbit_start = null
 var jumper = null
 
+onready var move_tween: Tween = $MoveTween
 onready var collision_shape := $CollisionShape2D
 onready var sprite := $Sprite
 onready var pivot := $Pivot
@@ -30,6 +32,7 @@ func init(_position, _radius = radius, _mode = Modes.LIMITED):
 	sprite.scale = Vector2(1, 1) * radius / img_size
 	orbit_position.position.x = radius + 25
 	rotation_speed *= pow(-1, randi() % 2)
+	set_tween()
 
 
 func _process(delta: float) -> void:
@@ -100,3 +103,13 @@ func capture(target):
 	animation_player.play("capture")
 	$Pivot.rotation = (jumper.position - position).angle()
 	orbit_start = $Pivot.rotation
+
+
+func set_tween(object=null, key=null):
+	if move_range == 0:
+		return
+	move_range *= -1
+	move_tween.interpolate_property(self, "position:x",
+			position.x, position.x + move_range,
+			move_speed, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+	move_tween.start()
