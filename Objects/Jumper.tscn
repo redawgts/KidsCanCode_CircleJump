@@ -11,8 +11,7 @@ shader = ExtResource( 3 )
 shader_param/color = Color( 0.870588, 0.101961, 0.0235294, 1 )
 
 [sub_resource type="Gradient" id=3]
-offsets = PoolRealArray( 0, 0.0111732, 1 )
-colors = PoolColorArray( 0.85098, 0.65098, 0.054902, 0, 0.85098, 0.65098, 0.054902, 0, 0.85098, 0.65098, 0.054902, 1 )
+colors = PoolColorArray( 0.85098, 0.65098, 0.054902, 0, 0.85098, 0.65098, 0.054902, 1 )
 
 [node name="Jumper" type="Area2D"]
 script = ExtResource( 2 )

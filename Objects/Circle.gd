@@ -20,10 +20,17 @@ onready var orbit_position := $Pivot/OrbitPosition
 onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 
-func init(_position, _radius = radius, _mode = Modes.LIMITED):
+func init(_position, level = 1):
+	var _mode = Settings.rand_weighted([10, level - 1])
 	set_mode(_mode)
 	position = _position
-	radius = _radius
+	var move_chance = clamp(level - 10, 0, 9) / 10.0
+	if randf() < move_chance:
+		move_range = max(25, 100 * rand_range(0.75, 1.25) * move_chance) * pow(-1, randi() % 2)
+		move_speed = max(2.5 - ceil(level / 5) * 0.25, 0.75)
+	var small_chance = min(0.9, max(0, (level - 10) / 20.0))
+	if randf() < small_chance:
+		radius = max(50, radius - level * rand_range(0.75, 1.25))
 	sprite.material = sprite.material.duplicate()
 	$SpriteEffect.material = sprite.material
 	collision_shape.shape = collision_shape.shape.duplicate()
@@ -105,7 +112,7 @@ func capture(target):
 	orbit_start = $Pivot.rotation
 
 
-func set_tween(object=null, key=null):
+func set_tween(_object=null, _key=null):
 	if move_range == 0:
 		return
 	move_range *= -1

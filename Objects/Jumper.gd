@@ -8,12 +8,16 @@ var jump_speed = 1000
 var target = null
 var trail_length = 25
 
-onready var trail := $Trail/Points
+onready var trail: Line2D = $Trail/Points
 
 
 func _ready() -> void:
 	$Sprite.material.set_shader_param("color", Settings.theme["player_body"])
-	$Trail/Points.default_color = Settings.theme["player_trail"]
+	var trail_color = Settings.theme["player_trail"]
+	trail.gradient.set_color(1, trail_color)
+	trail_color.a = 0
+	trail.gradient.set_color(0, trail_color)
+
 
 func _unhandled_input(event):
 	if target and event is InputEventScreenTouch and event.pressed:
