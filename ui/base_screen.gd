@@ -1,7 +1,8 @@
+class_name BaseScreen
 extends CanvasLayer
 
 onready var title: Label = $MarginContainer/VBoxContainer/Title
-onready var tween: Tween = $MarginContainer/Tween
+onready var tween: Tween = $Tween
 
 
 func appear():
@@ -14,3 +15,7 @@ func disappear():
 	get_tree().call_group("buttons", "set_disabled", true)
 	tween.interpolate_property(self, "offset:x", 0, 500, 0.5, Tween.TRANS_BACK, Tween.EASE_IN_OUT)
 	tween.start()
+
+
+func _on_TextEdit_meta_clicked(meta):
+	OS.shell_open(meta)

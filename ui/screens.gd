@@ -12,7 +12,8 @@ var music_buttons = {
 	false: preload("res://assets/images/buttons/musicOff.png"),
 }
 
-var current_screen = null
+var current_screen: BaseScreen = null
+
 
 func _ready() -> void:
 	register_buttons()
@@ -23,6 +24,11 @@ func register_buttons():
 	var buttons = get_tree().get_nodes_in_group("buttons")
 	for button in buttons:
 		button.connect("pressed", self, "_on_button_pressed", [button])
+		match button.name:
+			"Sound":
+				button.texture_normal = sound_buttons[Settings.enable_sound]
+			"Music":
+				button.texture_normal = music_buttons[Settings.enable_music]
 
 
 func change_screen(new_screen):
@@ -42,7 +48,7 @@ func game_over(score, highscore):
 	change_screen($GameOverScreen)
 
 
-func _on_button_pressed(button: TextureButton):
+func _on_button_pressed(button):
 	if Settings.enable_sound:
 		$Click.play()
 	match button.name:
@@ -57,6 +63,10 @@ func _on_button_pressed(button: TextureButton):
 		"Sound":
 			Settings.enable_sound = !Settings.enable_sound
 			button.texture_normal = sound_buttons[Settings.enable_sound]
+			Settings.save_settings()
 		"Music":
 			Settings.enable_music = !Settings.enable_music
 			button.texture_normal = music_buttons[Settings.enable_music]
+			Settings.save_settings()
+		"About":
+			change_screen($AboutScreen)
