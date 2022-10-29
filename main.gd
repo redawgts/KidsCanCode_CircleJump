@@ -4,8 +4,8 @@ var Circle = preload("res://objects/circle.tscn")
 var Jumper = preload("res://objects/jumper.tscn")
 
 var player
-var score := 0 setget set_score
-var level := 0
+var score = 0 setget set_score
+var level = 0
 
 
 func _ready() -> void:

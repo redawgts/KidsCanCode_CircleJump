@@ -2,11 +2,11 @@ extends Area2D
 
 enum Modes { STATIC, LIMITED }
 
-var radius := 100
+var radius = 100
 var rotation_speed := PI
 var mode = Modes.STATIC
-var move_range := 100
-var move_speed := 1.0
+var move_range = 0
+var move_speed = 1.0
 var num_orbits = 3
 var current_orbits = 0
 var orbit_start = null
